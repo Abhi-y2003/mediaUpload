@@ -36,8 +36,12 @@ function isFileTypeSupported(type, supportedTypes){
     return supportedTypes.includes(type);
 }
 
-async function uploadFileToCloudinary(file, folder) {
+async function uploadFileToCloudinary(file, folder, quality) {
     const options = {folder};
+
+    if(quality){
+        options.quality=quality;
+    }
     options.resource_type="auto";
     return await cloudinary.uploader.upload(file.tempFilePath, options);
 } 
@@ -131,8 +135,6 @@ exports.videoUpload = async(req,res)=>{
 
         const response = await uploadFileToCloudinary(file, "new");
         console.log(response);
-        console.log("hello")
-
         
         //db mein entry save kro 
 
@@ -155,6 +157,56 @@ exports.videoUpload = async(req,res)=>{
         return res.status(401).json({
             success:false,
             message:"Video file not uploaded"
+        });
+    }
+}
+
+
+//image size reducer 
+
+exports.imageSizeReducer = async(req,res) =>{
+
+    try {
+        
+        //fetching the data from the api 
+        const{name,tags,email} = req.body;
+        console.log(name,tags,email);
+
+        const file = req.files.imageFile;
+        console.log(file);
+
+        //validation of videofile
+
+        const supportedTypes = ["jpeg", "jpg", "png"]
+        const fileType = file.name.split('.')[1].toLowerCase();
+
+        if(!isFileTypeSupported){
+            return res.status(400).json({
+                success:false,
+                message:'File format not supported'
+            })
+        }
+
+        //cloudinary pr upload karenge
+
+        const response = await uploadFileToCloudinary(file, "new" , 90);
+        console.log(response);
+        
+        //db mein entry save kro 
+
+        const fileData = await File.create({
+            name,
+            email,
+            tags,
+            imageUrl:response.secure_url
+        });
+
+    } catch (error) {
+        
+        console.error(error);
+        return res.status(401).json({
+            success:false,
+            message:"error in image size reducer"
         });
     }
 }
