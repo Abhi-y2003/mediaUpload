@@ -10,10 +10,22 @@ exports.localFileUpload = async (req,res)=>{
         console.log("Path is", path);
 
 
-        file.mv(path, (error) ={
+        file.mv(path, (error) => { 
+            console.log("error")
+        });
 
+        res.status(200).json({
+            success:true,
+            message:"local file uploaded successfully"
         })
     } catch (error) {
+
+        console.log(error);
+        res.status(500).json({
+            success:false,
+            message:"local file uploaded successfully"
+        })
+
         
     }
 }

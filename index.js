@@ -3,7 +3,7 @@ const app = express();
 
 //fetching .env file and defining the port
 require("dotenv").config();
-const port = process.env.PORT || 4000;
+const PORT = process.env.PORT || 4000;
 
 
 //middleware to handel media files
