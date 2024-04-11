@@ -6,7 +6,7 @@ exports.localFileUpload = async (req,res)=>{
         //fetching the file
         const file = req.files.file;
          
-        let path = __dirname + "/files/" + Date.now();
+        let path = __dirname + "/files/" + Date.now() + `.${file.name.split('.')[1]}`;
         console.log("Path is", path);
 
 
